@@ -3,12 +3,12 @@ from rest_framework.response import Response
 from .serializers import TodoSerializer
 from .models import Todo
 
-# Create your views here.
 
+# Create your views here.
 
 @api_view(['GET'])
 def getData(request):
-    notes = Todo.objects.all()
+    notes = Todo.objects.filter(user=request.user)
     serializer = TodoSerializer(notes, many=True)
     return Response(serializer.data)
 
@@ -24,7 +24,8 @@ def viewDataById(request, pk):
 def createData(request):
     data = request.data
     note = Todo.objects.create(
-        note=data['note']
+        note=data['note'],
+        user=request.user
     )
     serializer = TodoSerializer(note, many=False)
     return Response(serializer.data)
